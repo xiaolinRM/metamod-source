@@ -136,4 +136,4 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: metamod-source
-          path: ./package
+          path: ./
