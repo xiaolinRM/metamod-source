@@ -101,5 +101,5 @@ jobs:
       - name: Archive build
         uses: actions/upload-artifact@v5
         with:
-          name: metamod-source-${{ runner.os }}
+          name: metamod-source-${{ matrix.os_short }}-${{ matrix.compiler_cc }}
           path: ./metamod-source/build/package
