@@ -78,7 +78,7 @@ if (-not (Test-Path "metamod-source" -PathType Container))
 
 if (-not (Test-Path "hl2sdk-proxy-repo" -PathType Container))
 {
-    & git clone --mirror https://github.com/alliedmodders/hl2sdk hl2sdk-proxy-repo 2>&1 | Write-Host
+    & git clone --mirror https://github.com/xiaolinRM/hl2sdk hl2sdk-proxy-repo 2>&1 | Write-Host
 }
 else
 {
@@ -88,7 +88,7 @@ else
 }
 
 $SDKS | ForEach-Object {
-    Get-Repository -Name "hl2sdk-$_" -Branch $_ -Repo "hl2sdk-proxy-repo" "https://github.com/alliedmodders/hl2sdk.git"
+    Get-Repository -Name "hl2sdk-$_" -Branch $_ -Repo "hl2sdk-proxy-repo" "https://github.com/xiaolinRM/hl2sdk.git"
 }
 
 # Find a suitable installation of Python
