@@ -131,3 +131,9 @@ jobs:
           if [ -d "${{ matrix.os_short }}-x86_64" ]; then
             ./${{ matrix.os_short }}-x86_64/test_sourcehook -v
           fi
+
+      - name: Archive build
+        uses: actions/upload-artifact@v5
+        with:
+          name: metamod-source
+          path: ./build/package
