@@ -97,9 +97,10 @@ jobs:
         run: |
           mkdir build
           cd build
+          # Breakpad symbol uploading is disabled: no BREAKPAD_SYMBOL_SERVER is
+          # configured for this fork, so upload_symbols.py would fail.
           python3 ../configure.py \
             --enable-optimize \
-            --breakpad-dump \
             --symbol-files \
             --sdks=${{ join(fromJson(env.SDKS), ',') }} \
             --targets=${{ env.ARCH }} \
