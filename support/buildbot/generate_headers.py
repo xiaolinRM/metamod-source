@@ -38,8 +38,13 @@ def run_and_return(argv):
     text = output.decode('utf8')
   return text.strip()
 
+# This fork pins the revision number so that the compiled version string is always
+# exactly "2.0.0-dev+1469", no matter how many commits the branch has. Set the
+# MMS_BUILD_REVISION environment variable to use a different revision.
+PINNED_REVISION = os.environ.get('MMS_BUILD_REVISION') or '1469'
+
 def get_git_version():
-  revision_count = run_and_return(['git', 'rev-list', '--count', 'HEAD'])
+  revision_count = PINNED_REVISION
   revision_hash = run_and_return(['git', 'log', '--pretty=format:%h:%H', '-n', '1'])
   shorthash, longhash = revision_hash.split(':')
 

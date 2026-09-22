@@ -25,9 +25,11 @@ parser.options.add_argument('--enable-debug', action='store_const', const='1', d
                        help='Enable debugging symbols')
 parser.options.add_argument('--enable-optimize', action='store_const', const='1', dest='opt',
                        help='Enable optimization')
-parser.options.add_argument('-s', '--sdks', default='present', dest='sdks',
+# This fork only builds for Left 4 Dead 2; every other game has been removed,
+# so the default SDK is l4d2 instead of every SDK that happens to be present.
+parser.options.add_argument('-s', '--sdks', default='l4d2', dest='sdks',
                        help='Build against specified SDKs; valid args are "all", "present", or '
-                            'comma-delimited list of engine names')
+                            'comma-delimited list of engine names (this fork defaults to "l4d2")')
 parser.options.add_argument('--enable-tests', default=False, dest='enable_tests', action='store_true',
                        help='Build tests.')
 parser.options.add_argument('--breakpad-dump', action='store_true', dest='breakpad_dump',

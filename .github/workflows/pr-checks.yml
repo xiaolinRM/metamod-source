@@ -22,7 +22,8 @@ jobs:
       image: ${{ matrix.container_image }}
     name: ${{ matrix.os_short }}
     env:
-      SDKS: '["episode1","tf2","l4d2","cs2","insurgency"]'
+      # This fork only builds for Left 4 Dead 2; every other game has been removed.
+      SDKS: '["l4d2"]'
     steps:
       - uses: actions/checkout@v6
         with:

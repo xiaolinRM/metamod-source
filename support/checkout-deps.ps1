@@ -7,30 +7,9 @@
 
 [CmdletBinding()]
 param(
+    # This fork only builds for Left 4 Dead 2; every other game has been removed.
     [string[]]$SDKs = @(
-        'csgo'
-        'hl2dm'
-        'nucleardawn'
         'l4d2'
-        'dods'
-        'l4d'
-        'css'
-        'tf2'
-        'insurgency'
-        'sdk2013'
-        'dota'
-        'orangebox'
-        'blade'
-        'episode1'
-        'bms'
-        'darkm'
-        'swarm'
-        'bgt'
-        'eye'
-        'contagion'
-        'doi'
-        'pvkii'
-        'mcv'
         )
 )
 
@@ -78,7 +57,7 @@ if (-not (Test-Path "metamod-source" -PathType Container))
 
 if (-not (Test-Path "hl2sdk-proxy-repo" -PathType Container))
 {
-    & git clone --mirror https://github.com/alliedmodders/hl2sdk hl2sdk-proxy-repo 2>&1 | Write-Host
+    & git clone --mirror https://github.com/xiaolinRM/hl2sdk hl2sdk-proxy-repo 2>&1 | Write-Host
 }
 else
 {
@@ -88,7 +67,7 @@ else
 }
 
 $SDKS | ForEach-Object {
-    Get-Repository -Name "hl2sdk-$_" -Branch $_ -Repo "hl2sdk-proxy-repo" "https://github.com/alliedmodders/hl2sdk.git"
+    Get-Repository -Name "hl2sdk-$_" -Branch $_ -Repo "hl2sdk-proxy-repo" "https://github.com/xiaolinRM/hl2sdk.git"
 }
 
 # Find a suitable installation of Python

@@ -1,7 +1,7 @@
 ## Manual building example
 
 ### Prerequisites
- * [hl2sdk](https://github.com/alliedmodders/hl2sdk) of games you plan on writing plugin for (this sample only supports Source2 based games);
+ * [hl2sdk](https://github.com/xiaolinRM/hl2sdk) of games you plan on writing plugin for (this sample only supports Source2 based games);
  * [hl2sdk-manifests](https://github.com/alliedmodders/hl2sdk-manifests);
  * [metamod-source](https://github.com/alliedmodders/metamod-source);
  * [python3](https://www.python.org/)
@@ -29,7 +29,7 @@
    * ``{SDKNAMES}`` should be the hl2sdk game names that you are building for, separated by comma (e.g. ``cs2,dota``);
    * ``{TARGET}`` should be the target platform you are targeting (``x86`` or ``x86_64``, source2 games are mostly ``x86_64``);
    * ``{MMS_PATH}`` should point to the root of the [metamod-source](https://github.com/alliedmodders/metamod-source) folder;
-   * ``{HL2SDKROOT}`` should point to the root of the [hl2sdk](https://github.com/alliedmodders/hl2sdk)'s folders, note that it should **not** point to the actual ``hl2sdk-GAME`` folder but a parent directory of it (Game specific folders inside the root needs to be named as ``hl2sdk-GAME`` where ``GAME`` is a game name like ``cs2``);
+   * ``{HL2SDKROOT}`` should point to the root of the [hl2sdk](https://github.com/xiaolinRM/hl2sdk)'s folders, note that it should **not** point to the actual ``hl2sdk-GAME`` folder but a parent directory of it (Game specific folders inside the root needs to be named as ``hl2sdk-GAME`` where ``GAME`` is a game name like ``cs2``);
    * ``{HL2SDKMANIFESTS}`` should point to the root of a clone of the [hl2sdk-manifests](https://github.com/alliedmodders/hl2sdk-manifests) repository.
     > **Example**: ``python3 ../configure.py -s cs2,dota --targets=x86_64 --mms_path=D:\mmsource-1.12 --hl2sdk-root=D:\hl2sdks``
  * If the process of configuring was successful, you should be able to run ``ambuild`` in the ``\build`` folder to compile the plugin.
@@ -40,8 +40,8 @@
  To quickly configure various projects, it's recommended to setup an environment variables to point to certain locations used for building:
  * ``MMSOURCE20``/``MMSOURCE_DEV`` should point to root of [metamod-source](https://www.metamodsource.net/downloads.php?branch=dev) of the version 2.0 and higher;
  * ``HL2SDKMANIFESTS`` should point to [hl2sdk-manifests](https://github.com/alliedmodders/hl2sdk-manifests) directory.
- * ``HL2SDKROOT`` should point to root folder where [hl2sdk](https://github.com/alliedmodders/hl2sdk) directories are in;
- * Alternatively ``HL2SDK{GAME}`` (e.g. ``HL2SDKCS2``) can be used to point to game specific [hl2sdk](https://github.com/alliedmodders/hl2sdk) directories, in which case a direct path to its root needs to be provided;
+ * ``HL2SDKROOT`` should point to root folder where [hl2sdk](https://github.com/xiaolinRM/hl2sdk) directories are in;
+ * Alternatively ``HL2SDK{GAME}`` (e.g. ``HL2SDKCS2``) can be used to point to game specific [hl2sdk](https://github.com/xiaolinRM/hl2sdk) directories, in which case a direct path to its root needs to be provided;
 > [!NOTE]
 > If you have ``HL2SDKROOT`` defined as well, it will take priority over game specific environment variables!
 

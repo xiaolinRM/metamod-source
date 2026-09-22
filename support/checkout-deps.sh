@@ -4,7 +4,7 @@
 trap "exit" INT
 
 # List of HL2SDK branch names to download.
-# ./checkout-deps.sh -s tf2,css
+# ./checkout-deps.sh -s l4d2
 while getopts ":s:" opt; do
   case $opt in
     s) IFS=', ' read -r -a sdks <<< "$OPTARG"
@@ -57,18 +57,13 @@ checkout ()
 }
 
 if [ -z ${sdks+x} ]; then
-  sdks=( csgo hl2dm nucleardawn l4d2 dods l4d css tf2 insurgency sdk2013 dota doi )
-
-  # Windows/Linux only.
-  sdks+=( orangebox blade episode1 bms pvkii mcv )
-
-  # Windows only.
-  sdks+=( darkm swarm bgt eye contagion )
+  # This fork only builds for Left 4 Dead 2; every other game has been removed.
+  sdks=( l4d2 )
 fi
 
 # Check out a local copy as a proxy.
 if [ ! -d "hl2sdk-proxy-repo" ]; then
-  git clone --mirror https://github.com/alliedmodders/hl2sdk hl2sdk-proxy-repo
+  git clone --mirror https://github.com/xiaolinRM/hl2sdk hl2sdk-proxy-repo
 else
   cd hl2sdk-proxy-repo
   git fetch
@@ -78,7 +73,7 @@ fi
 for sdk in "${sdks[@]}"
 do
   repo=hl2sdk-proxy-repo
-  origin="https://github.com/alliedmodders/hl2sdk"
+  origin="https://github.com/xiaolinRM/hl2sdk"
   name=hl2sdk-$sdk
   branch=$sdk
   checkout

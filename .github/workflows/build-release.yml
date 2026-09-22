@@ -4,9 +4,14 @@ on:
     branches:
       - master
       - '[0-9]+.[0-9]+-dev'
+  workflow_dispatch:
 env:
   ARCH: x86,x86_64
   DUMP_SYMS_VERSION: '2.3.7'
+  # This fork only builds for Left 4 Dead 2; every other game has been removed.
+  SDKS: '["l4d2"]'
+  # Pinned build revision: the compiled Metamod:Source always reports 2.0.0-dev+1469.
+  MMS_BUILD_REVISION: '1469'
 jobs:
   build:
     permissions:
@@ -63,36 +68,13 @@ jobs:
         run: |
           echo "dependencies=$GITHUB_WORKSPACE/dependencies" >> $GITHUB_OUTPUT
 
-      - name: Generate SDK list
-        id: sdk_list
-        shell: bash
-        run: |
-          sdk_list=()
-          for file in metamod-source/hl2sdk-manifests/manifests/*.json; do
-            sdk=$(basename "$file" .json)
-            if [[ $sdk == "mock" ]]; then
-              # We don't need to ship a build for the mock SDK
-              continue
-            fi
-
-            platform=$(jq -r '.platforms.${{ matrix.platform }}' "$file")
-            if [[ -z $platform || $platform == "null" || ${#platform[@]} -eq 0 ]]; then
-              continue
-            fi
-
-            # Unlike SourceMod, MM:S supports Source2 SDKs on master (2.x branch).
-            # AMBuildScript's shouldIncludeSdk() handles per-branch filtering at build time.
-            sdk_list+=("$sdk")
-          done
-          echo "sdk_list=$(printf '%s\n' "${sdk_list[@]}" | jq --raw-input . | jq --slurp --compact-output .)" >> $GITHUB_OUTPUT
-
       - name: Cache dependencies
         uses: actions/cache@v5
         env:
           cache-name: hl2sdk
         with:
           path: ${{ steps.path_helper.outputs.dependencies }}
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ join(fromJson(steps.sdk_list.outputs.sdk_list), '') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ join(fromJson(env.SDKS), '') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
 
@@ -104,7 +86,7 @@ jobs:
 
           # Satisfy checkout-deps requirement for a "metamod-source" folder.
           mkdir -p metamod-source
-          ../metamod-source/support/checkout-deps.sh -s ${{ join(fromJson(steps.sdk_list.outputs.sdk_list), ',') }}
+          ../metamod-source/support/checkout-deps.sh -s ${{ join(fromJson(env.SDKS), ',') }}
 
       - name: Build
         working-directory: metamod-source
@@ -119,7 +101,7 @@ jobs:
             --enable-optimize \
             --breakpad-dump \
             --symbol-files \
-            --sdks=${{ join(fromJson(steps.sdk_list.outputs.sdk_list), ',') }} \
+            --sdks=${{ join(fromJson(env.SDKS), ',') }} \
             --targets=${{ env.ARCH }} \
             '--hl2sdk-root=${{ steps.path_helper.outputs.dependencies }}'
           ambuild
@@ -131,23 +113,30 @@ jobs:
         run: |
           version_base=$(cat ../../product.version)
           version_base=${version_base%-dev} # Ex. 2.0.0
-          version_rev=$(git rev-list --count HEAD)
+          # Pinned revision so the package version always matches the compiled
+          # version string (2.0.0-dev+1469) instead of drifting with the commit count.
+          version_rev="${MMS_BUILD_REVISION}"
           version="${version_base}.${version_rev}"
-          expanded_version="${version_base}-git${version_rev}"
 
           if [ "${{ matrix.platform }}" == "windows" ]; then
-            filename="mmsource-${expanded_version}-${{ matrix.platform }}.zip"
+            filename="mmsource-${version}-${{ matrix.platform }}.zip"
             7z a "$filename" addons
             content_type="application/zip"
           else
-            filename="mmsource-${expanded_version}-${{ matrix.platform }}.tar.gz"
+            filename="mmsource-${version}-${{ matrix.platform }}.tar.gz"
             tar zcf "$filename" addons
             content_type="application/gzip"
           fi
           echo "version=$version" >> $GITHUB_OUTPUT
-          echo "expanded_version=$expanded_version" >> $GITHUB_OUTPUT
           echo "filename=$filename" >> $GITHUB_OUTPUT
           echo "content_type=$content_type" >> $GITHUB_OUTPUT
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: metamod-source-${{ matrix.os_short }}
+          path: metamod-source/build/package
+          if-no-files-found: error
 
       - name: Create Release
         id: create_release
